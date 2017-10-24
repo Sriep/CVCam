@@ -14,11 +14,12 @@ OpenCVRunnable::OpenCVRunnable(OpenCVFilter *filter)
 {
 }
 
+/*
 SketchVFRunnable::SketchVFRunnable(OpenCVFilter *filter)
     :OpenCVRunnable(filter)
 {
 }
-
+*/
 //https://bugreports.qt.io/browse/QTBUG-47934
 //If you refer to Qt source code, specifically, 
 //qtmultimedia/examples/multimedia/video/qmlvideofilter_opencl there's a 
@@ -106,7 +107,10 @@ QVideoFrame SketchVFRunnable::runWithImageWrapper(QVideoFrame *input, const QVid
 }
 */
 
-QVideoFrame SketchVFRunnable::run(QVideoFrame *input
+//QVideoFrame SketchVFRunnable::run(QVideoFrame *input
+//                                , const QVideoSurfaceFormat &surfaceFormat
+//                                , QVideoFilterRunnable::RunFlags flags)
+QVideoFrame OpenCVRunnable::run(QVideoFrame *input
                                 , const QVideoSurfaceFormat &surfaceFormat
                                 , QVideoFilterRunnable::RunFlags flags)
 {
@@ -126,32 +130,44 @@ QVideoFrame SketchVFRunnable::run(QVideoFrame *input
     QImage image(input->bits(), input->width(), input->height(), imageFormat);
     qDebug() << "Width 1: " << image.width();
     cv::Mat inMat = QImageToCvMat(image, false);
-    inMat.setTo(cv::Scalar(255, 0, 0));
+    //inMat.setTo(cv::Scalar(255, 255, 0));
+    cv::Mat outMat;
+    inMat.copyTo(outMat);
+    //outMat.setTo(cv::Scalar(0, 0, 255));
 
-    //QColor colour = QColor(0, 0, 255, 127);
-    //image.fill(colour);
-    //if (input->isMapped())
-    //    input->unmap();
+    modifyImage(inMat, outMat);
+    outMat.copyTo(inMat);
 
-    QImage outImage = cvMatToQImage(inMat);
+    QImage outImage = cvMatToQImage(outMat);
     outImage = outImage.convertToFormat(imageFormat);
-    //image = outImage.copy();
     qDebug() << "Width 2: " << outImage.width();
-    //QVideoFrame vf(outImage);
-    //*input = outImage;
-
     QVideoFrame outvf = QVideoFrame(outImage);
     qDebug() << "Is mapped: " << outvf.isMapped();
-    if (outvf.isMapped())
-        outvf.unmap();
+    if (outvf.isMapped())  outvf.unmap();
     emit filter->finished();
     *input = outvf;
-    //return *outvf;
-    if (input->isMapped())
-        input->unmap();
-
-  return *input;
+    if (input->isMapped()) input->unmap();
+    return *input;
 }
+
+void ToonVFRunnable::modifyImage(Mat inMat, Mat outMat)
+{
+    cartoonifyImage(inMat, outMat, false, false, false, 0);
+}
+void SketchVFRunnable::modifyImage(Mat inMat, Mat outMat)
+{
+    cartoonifyImage(inMat, outMat, true, false, false, 0);
+}
+void EvilVFRunnable::modifyImage(Mat inMat, Mat outMat)
+{
+    cartoonifyImage(inMat, outMat, false, true, false, 0);
+}
+void AlianVFRunnable::modifyImage(Mat inMat, Mat outMat)
+{
+    cartoonifyImage(inMat, outMat, false, false, true, 0);
+}
+
+
 
 // Apply an "alien" filter, when given a shrunken BGR image and the full-res edge mask.
 // Detects the color of the pixels in the middle of the image, then changes the color of that region to green.
@@ -340,7 +356,7 @@ void OpenCVRunnable::drawFaceStickFigure(cv::Mat dst)
     addWeighted(dst, 1.0, faceOutline, 0.7, 0, dst, CV_8UC3);
 }
 
-void OpenCVRunnable::cartoonifyImage(Mat inMat, Mat dst, bool sketchMode, bool alienMode, bool evilMode, int debugType)
+void OpenCVRunnable::cartoonifyImage(Mat inMat, Mat outMat, bool sketchMode, bool alienMode, bool evilMode, int debugType)
 {
     // Convert from BGR color to Grayscale
     Mat srcGray;
@@ -376,7 +392,7 @@ void OpenCVRunnable::cartoonifyImage(Mat inMat, Mat dst, bool sketchMode, bool a
     // For sketch mode, we just need the mask!
     if (sketchMode) {
         // The output image has 3 channels, not a single channel.
-        cvtColor(mask, dst, CV_GRAY2BGR);
+        cvtColor(mask, outMat, CV_GRAY2BGR);
         return;
     }
 
@@ -410,8 +426,8 @@ void OpenCVRunnable::cartoonifyImage(Mat inMat, Mat dst, bool sketchMode, bool a
     resize(smallImg, inMat, size, 0,0, INTER_LINEAR);
 
     // Clear the output image to black, so that the cartoon line drawings will be black (ie: not drawn).
-    memset((char*)dst.data, 0, dst.step * dst.rows);
+    memset((char*)outMat.data, 0, outMat.step * outMat.rows);
 
     // Use the blurry cartoon image, except for the strong edges that we will leave black.
-    inMat.copyTo(dst, mask);
+    inMat.copyTo(outMat, mask);
 }

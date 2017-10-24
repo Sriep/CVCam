@@ -12,9 +12,10 @@ class OpenCVFilter;
 class OpenCVRunnable : public QVideoFilterRunnable
 {
 public:
-    //QImage cvMatToQImage(const cv::Mat &inMat);
-    //cv::Mat QImageToCvMat(const QImage &inImage, bool inCloneImageData=true);
     OpenCVRunnable(OpenCVFilter* filter);
+    virtual QVideoFrame run(QVideoFrame *input
+                    , const QVideoSurfaceFormat &surfaceFormat
+                    , RunFlags flags);
 protected:
     static void changeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges, int debugType);
     static void removePepperNoise(cv::Mat &mask);
@@ -25,21 +26,52 @@ protected:
                                 , bool alienMode=false
                                 , bool evilMode=false
                                 , int debugType=0);
+    virtual void modifyImage(cv::Mat inMat, cv::Mat dst) =0;
 
     OpenCVFilter* filter;
+};
+
+class UnchangedVFRunnable : public OpenCVRunnable
+{
+public:
+    UnchangedVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
+    virtual QVideoFrame run(QVideoFrame *input
+                    , const QVideoSurfaceFormat &surfaceFormat
+                    , RunFlags flags) { return *input; }
+private:
+    virtual void modifyImage(cv::Mat , cv::Mat ) {}
 };
 
 class SketchVFRunnable : public OpenCVRunnable
 {
 public:
-    SketchVFRunnable(OpenCVFilter* filter);
-    virtual QVideoFrame run(QVideoFrame *input
-                    , const QVideoSurfaceFormat &surfaceFormat
-                    , RunFlags flags);
+    SketchVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
 private:
-    //QVideoFrame runWithImageWrapper(QVideoFrame *input
-    //                    , const QVideoSurfaceFormat &surfaceFormat
-    //                    , RunFlags flags);
+    virtual void modifyImage(cv::Mat inMat, cv::Mat outMat);
+};
+
+class ToonVFRunnable : public OpenCVRunnable
+{
+public:
+    ToonVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
+private:
+    virtual void modifyImage(cv::Mat inMat, cv::Mat outMat);
+};
+
+class EvilVFRunnable : public OpenCVRunnable
+{
+public:
+    EvilVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
+private:
+    virtual void modifyImage(cv::Mat inMat, cv::Mat outMat);
+};
+
+class AlianVFRunnable : public OpenCVRunnable
+{
+public:
+    AlianVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
+private:
+    virtual void modifyImage(cv::Mat inMat, cv::Mat outMat);
 };
 
 // If inImage exists for the lifetime of the resulting cv::Mat, pass false to inCloneImageData to share inImage's

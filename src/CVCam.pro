@@ -1,6 +1,6 @@
 CONFIG += v-play
 TEMPLATE=app
-TARGET=declarative-camera
+TARGET=CVCam
 
 QT += quick qml multimedia
 
