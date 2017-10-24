@@ -43,6 +43,9 @@
 #include <QQmlEngine>
 //#include <VPApplication>
 #include <QQmlApplicationEngine>
+#include <QDebug>
+#include <QStandardPaths>
+#include <QString>
 
 #include "opencvfilter.h"
 
@@ -50,7 +53,16 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc,argv);
     QQmlApplicationEngine engine;
+
+    QString pics=QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
+    QString vids=QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
+    qDebug() << "pics " << pics << " \nvids " << vids;
+
+    qmlRegisterType<UnchangedVFilter>("CoolCamera", 1, 0, "UnchangedVFilter");
+    qmlRegisterType<ToonVFilter>("CoolCamera", 1, 0, "ToonVFilter");
     qmlRegisterType<SketchVFilter>("CoolCamera", 1, 0, "SketchVFilter");
+    qmlRegisterType<EvilVFilter>("CoolCamera", 1, 0, "EvilVFilter");
+    qmlRegisterType<AlienVFilter>("CoolCamera", 1, 0, "AlienVFilter");
     QQuickView view(&engine,0);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     QObject::connect(view.engine(), SIGNAL(quit()), qApp, SLOT(quit()));

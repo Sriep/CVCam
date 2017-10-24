@@ -71,7 +71,8 @@ FocusScope {
 
             FocusButton {
                 camera: captureControls.camera
-                visible: camera.cameraStatus == Camera.ActiveStatus && camera.focus.isFocusModeSupported(Camera.FocusAuto)
+                visible: camera.cameraStatus == Camera.ActiveStatus
+                         && camera.focus.isFocusModeSupported(Camera.FocusAuto)
             }
 
             CameraButton {

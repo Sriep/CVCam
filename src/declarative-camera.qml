@@ -122,11 +122,23 @@ Rectangle {
         source: visible ? camera.videoRecorder.actualLocation : ""
     }
 
+    UnchangedVFilter {
+        id: unchangedFilter
+    }
+    ToonVFilter {
+        id: toonFilter
+    }
     SketchVFilter {
         id: sketchFilter
         onFinished: {
             console.log("Finished sketch");
         }
+    }
+    EvilVFilter {
+        id: evilFilter
+    }
+    AlienVFilter {
+        id: alienFilter
     }
 
     VideoOutput {

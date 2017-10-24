@@ -17,17 +17,7 @@ public:
                     , const QVideoSurfaceFormat &surfaceFormat
                     , RunFlags flags);
 protected:
-    static void changeFacialSkinColor(cv::Mat smallImgBGR, cv::Mat bigEdges, int debugType);
-    static void removePepperNoise(cv::Mat &mask);
-    static void drawFaceStickFigure(cv::Mat dst);
-    static void cartoonifyImage(cv::Mat inMat
-                                , cv::Mat dst
-                                , bool sketchMode=false
-                                , bool alienMode=false
-                                , bool evilMode=false
-                                , int debugType=0);
-    virtual void modifyImage(cv::Mat inMat, cv::Mat dst) =0;
-
+    virtual void modifyImage(cv::Mat inMat, cv::Mat dst) = 0;
     OpenCVFilter* filter;
 };
 

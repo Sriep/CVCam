@@ -5,7 +5,7 @@ Cartoon::Cartoon()
 
 }
 
-
+/*
 void Cartoon::cartoonifyImage(Mat srcColor, Mat dst)
 {
     Mat gray;
@@ -47,7 +47,7 @@ void Cartoon::cartoonifyImage(Mat srcColor, Mat dst)
     dst.setTo(0);
     bigImg.copyTo(dst, mask);
 }
-
+*/
 void Cartoon::cartoonifyImage(Mat srcColor, Mat dst, bool sketchMode, bool alienMode, bool evilMode, int debugType)
 {
     // Convert from BGR color to Grayscale
