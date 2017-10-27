@@ -40,12 +40,14 @@
 
 import QtQuick 2.0
 import QtMultimedia 5.4
+import CoolCamera 1.0
 
 FocusScope {
     property Camera camera
     property bool previewAvailable : false
 
     property int buttonsPanelWidth: buttonPaneShadow.width
+    property int displayMode: 0
 
     signal previewSelected
     signal videoModeSelected
@@ -96,7 +98,8 @@ FocusScope {
                         text: "Sunlight"
                     }
                     ListElement {
-                        icon: "images/camera_white_balance_cloudy.png"
+
+                        icon: "images/camera_auto_mode.png"
                         value: CameraImageProcessing.WhiteBalanceCloudy
                         text: "Cloudy"
                     }
@@ -111,7 +114,44 @@ FocusScope {
                         text: "Fluorescent"
                     }
                 }
-                onValueChanged: captureControls.camera.imageProcessing.whiteBalanceMode = wbModesButton.value
+                onValueChanged: captureControls.camera.imageProcessing.whiteBalanceMode = displayModeButton.value
+            }
+
+            CameraPropertyButton {
+                id : displayModeButton
+                value : 0
+                model: ListModel {
+                    ListElement {
+                        icon: "images/camera_auto_mode.png"
+                        value: Cartoon.Unchanged
+                        text: "Normal"
+                    }
+                    ListElement {
+                        icon: "images/camera_white_balance_sunny.png"
+                        value: Cartoon.Sketch
+                        text: "Sketch"
+                    }
+                    ListElement {
+                        icon: "images/camera_white_balance_cloudy.png"
+                        value: Cartoon.Toon
+                        text: "Toon"
+                    }
+                    ListElement {
+                        icon: "images/camera_white_balance_incandescent.png"
+                        value: Cartoon.Evil
+                        text: "Evil"
+                    }
+                    ListElement {
+                        icon: "images/camera_white_balance_flourescent.png"
+                        value: Cartoon.Alian
+                        text: "Alien"
+                    }
+                }
+                onValueChanged: {
+                    console.log("displaymodebutton value", displayModeButton.value);
+                    captureControls.displayMode = displayModeButton.value
+                    console.log("displaymode", captureControls.displayMode);
+                }
             }
 
             CameraButton {
@@ -119,6 +159,7 @@ FocusScope {
                 onClicked: captureControls.previewSelected()
                 visible: captureControls.previewAvailable
             }
+
         }
 
         Column {

@@ -1,10 +1,12 @@
 #include "cartoon.h"
-
-Cartoon::Cartoon()
+#include <QImage>
+#include <QDebug>
+/*
+Cartoon::Cartoon(QQuickItem *parent)
+    : QQuickItem(parent)
 {
-
 }
-
+*/
 /*
 void Cartoon::cartoonifyImage(Mat srcColor, Mat dst)
 {
@@ -48,6 +50,29 @@ void Cartoon::cartoonifyImage(Mat srcColor, Mat dst)
     bigImg.copyTo(dst, mask);
 }
 */
+void Cartoon::toonify(QString path, int toonFormat)
+{
+    QImage image(path);
+    qDebug() << "In toonifyer. Format" << toonFormat;
+    qDebug() << "toonifier width" << image.width();
+    qDebug() << "toonifier byte count" << image.byteCount();
+    qDebug() << "toonifier path" << path;
+ /*
+    switch(toonFormat)
+    {
+        case ToonFormat::Unchanged:
+            break;
+        case ToonFormat::Unchanged:
+            break;
+        case ToonFormat::Unchanged:
+            break;
+        case ToonFormat::Unchanged:
+            break;
+        case ToonFormat::Unchanged:
+            break;
+    };*/
+}
+
 void Cartoon::cartoonifyImage(Mat srcColor, Mat dst, bool sketchMode, bool alienMode, bool evilMode, int debugType)
 {
     // Convert from BGR color to Grayscale
@@ -151,7 +176,7 @@ void Cartoon::changeFacialSkinColor(Mat smallImgBGR, Mat bigEdges, int debugType
         // YCrCb Skin detector and color changer using multiple flood fills into a mask.
         // Apply flood fill on many points around the face, to cover different shades & colors of the face.
         // Note that these values are dependent on the face outline, drawn in drawFaceStickFigure().
-        Cartoon::drawFaceStickFigure(smallImgBGR);
+        //Cartoon::drawFaceStickFigure(smallImgBGR);
         int const NUM_SKIN_POINTS = 6;
         Point skinPts[NUM_SKIN_POINTS];
         skinPts[0] = Point(sw/2,          sh/2 - sh/6);

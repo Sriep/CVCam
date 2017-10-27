@@ -104,24 +104,37 @@ QVideoFrame SketchVFRunnable::run(QVideoFrame *input
 */
 
 QVideoFrame OpenCVRunnable::run(QVideoFrame *input
-                                , const QVideoSurfaceFormat &surfaceFormat
-                                , QVideoFilterRunnable::RunFlags flags)
+                                , const QVideoSurfaceFormat &
+                                , QVideoFilterRunnable::RunFlags )
 {
     // Convert the input into a suitable OpenCV image format,
     // then run e.g. cv::CascadeClassifier,
     // and finally store the list of rectangles into a
     // QObject exposing a 'rects' property.
+    qDebug() << "In OpenCVRunnable::run, type " << vFRType();
 
     if (!input->isValid())
         return *input;
     input->map(QAbstractVideoBuffer::ReadWrite);
     QVideoFrame::PixelFormat format = input->pixelFormat();
-    qDebug() << "handle type: " << input->handleType();
-    qDebug() << "pixel format: " << format;
+    //qDebug() << "handle type: " << input->handleType();
+    //qDebug() << "pixel format: " << format;
     QImage::Format imageFormat = QVideoFrame::imageFormatFromPixelFormat(input->pixelFormat());
-    qDebug() << "image format: " <<  imageFormat;
-    QImage image(input->bits(), input->width(), input->height(), imageFormat);
-    qDebug() << "Width 1: " << image.width();
+    //qDebug() << "image format: " <<  imageFormat;
+    //QImage image(input->bits(), input->width(), input->height(), imageFormat);
+    QImage image = imageWrapper(*input);
+    //QImage image;
+    //if (QImage::Format_Invalid == imageFormat
+    //        && (QAbstractVideoBuffer::NoHandle == handleType
+    //            || QAbstractVideoBuffer::GLTextureHandle == handleType))
+    //{
+    //    image = imageWrapper(*input);
+    //}
+    //else
+    //{
+    //    image = QImage(input->bits(), input->width(), input->height(), imageFormat);
+    //}
+    //qDebug() << "Width 1: " << image.width();
     cv::Mat inMat = QImageToCvMat(image, false);
     //inMat.setTo(cv::Scalar(255, 255, 0));
     cv::Mat outMat;
@@ -133,9 +146,9 @@ QVideoFrame OpenCVRunnable::run(QVideoFrame *input
 
     QImage outImage = cvMatToQImage(outMat);
     outImage = outImage.convertToFormat(imageFormat);
-    qDebug() << "Width 2: " << outImage.width();
+    //qDebug() << "Width 2: " << outImage.width();
     QVideoFrame outvf = QVideoFrame(outImage);
-    qDebug() << "Is mapped: " << outvf.isMapped();
+    //qDebug() << "Is mapped: " << outvf.isMapped();
     if (outvf.isMapped())  outvf.unmap();
     emit filter->finished();
     *input = outvf;

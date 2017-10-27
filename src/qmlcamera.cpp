@@ -48,6 +48,7 @@
 #include <QString>
 
 #include "opencvfilter.h"
+#include "cartoon.h"
 
 int main(int argc, char* argv[])
 {
@@ -63,6 +64,8 @@ int main(int argc, char* argv[])
     qmlRegisterType<SketchVFilter>("CoolCamera", 1, 0, "SketchVFilter");
     qmlRegisterType<EvilVFilter>("CoolCamera", 1, 0, "EvilVFilter");
     qmlRegisterType<AlienVFilter>("CoolCamera", 1, 0, "AlienVFilter");
+    qmlRegisterType<Cartoon>("CoolCamera", 1, 0, "Cartoon");
+
     QQuickView view(&engine,0);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     QObject::connect(view.engine(), SIGNAL(quit()), qApp, SLOT(quit()));

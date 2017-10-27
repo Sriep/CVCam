@@ -16,6 +16,7 @@ public:
     virtual QVideoFrame run(QVideoFrame *input
                     , const QVideoSurfaceFormat &surfaceFormat
                     , RunFlags flags);
+    virtual QString vFRType() = 0;
 protected:
     virtual void modifyImage(cv::Mat inMat, cv::Mat dst) = 0;
     OpenCVFilter* filter;
@@ -26,8 +27,9 @@ class UnchangedVFRunnable : public OpenCVRunnable
 public:
     UnchangedVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
     virtual QVideoFrame run(QVideoFrame *input
-                    , const QVideoSurfaceFormat &surfaceFormat
-                    , RunFlags flags) { return *input; }
+                    , const QVideoSurfaceFormat &
+                    , RunFlags ) { return *input; }
+    virtual QString vFRType() {return "Unchanged";}
 private:
     virtual void modifyImage(cv::Mat , cv::Mat ) {}
 };
@@ -36,6 +38,7 @@ class SketchVFRunnable : public OpenCVRunnable
 {
 public:
     SketchVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
+    virtual QString vFRType() {return "Sketch";}
 private:
     virtual void modifyImage(cv::Mat inMat, cv::Mat outMat);
 };
@@ -44,6 +47,7 @@ class ToonVFRunnable : public OpenCVRunnable
 {
 public:
     ToonVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
+        virtual QString vFRType() {return "Toon";}
 private:
     virtual void modifyImage(cv::Mat inMat, cv::Mat outMat);
 };
@@ -52,6 +56,7 @@ class EvilVFRunnable : public OpenCVRunnable
 {
 public:
     EvilVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
+    virtual QString vFRType() {return "Evil";}
 private:
     virtual void modifyImage(cv::Mat inMat, cv::Mat outMat);
 };
@@ -60,6 +65,7 @@ class AlianVFRunnable : public OpenCVRunnable
 {
 public:
     AlianVFRunnable(OpenCVFilter* filter) :OpenCVRunnable(filter) {}
+    virtual QString vFRType() {return "Alien";}
 private:
     virtual void modifyImage(cv::Mat inMat, cv::Mat outMat);
 };
@@ -93,7 +99,7 @@ inline cv::Mat QImageToCvMat( const QImage &inImage, bool inCloneImageData )
       {
          if ( !inCloneImageData )
          {
-            qWarning() << "ASM::QImageToCvMat() - Conversion requires cloning because we use a temporary QImage";
+            //qWarning() << "ASM::QImageToCvMat() - Conversion requires cloning because we use a temporary QImage";
          }
          QImage   swapped = inImage;         
          //if (inImage.format() == QImage::Format_RGB32
@@ -123,7 +129,7 @@ inline cv::Mat QImageToCvMat( const QImage &inImage, bool inCloneImageData )
       }
 
       default:
-         qWarning() << "ASM::QImageToCvMat() - QImage format not handled in switch:" << inImage.format();
+         //qWarning() << "ASM::QImageToCvMat() - QImage format not handled in switch:" << inImage.format();
          break;
    }
 
@@ -161,7 +167,7 @@ inline QImage cvMatToQImage(const cv::Mat &inMat)
         }
 
     default:
-        qWarning() << "cvMatToQImage() - cv::Mat image type not handled in switch:" << inMat.type();
+        //qWarning() << "cvMatToQImage() - cv::Mat image type not handled in switch:" << inMat.type();
         break;
     }
     return QImage();

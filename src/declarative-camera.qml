@@ -52,6 +52,7 @@ Rectangle {
 
     color: "black"
     state: "PhotoCapture"
+    property int displayMode: 1
 
     states: [
         State {
@@ -84,6 +85,9 @@ Rectangle {
             }
         }
     ]
+    Cartoon{
+        id: cartoon
+    }
 
     Camera {
         id: camera
@@ -92,6 +96,8 @@ Rectangle {
         imageCapture {
             onImageCaptured: {
                 photoPreview.source = preview
+                //var p = preview;
+                cartoon.toonify(preview, 1);
                 stillControls.previewAvailable = true
                 cameraUI.state = "PhotoPreview"
             }
@@ -118,7 +124,7 @@ Rectangle {
         visible: cameraUI.state == "VideoPreview"
         focus: visible
 
-        //don't load recorded video if preview is invisible
+        // don't load recorded video if preview is invisible
         source: visible ? camera.videoRecorder.actualLocation : ""
     }
 
@@ -131,7 +137,7 @@ Rectangle {
     SketchVFilter {
         id: sketchFilter
         onFinished: {
-            console.log("Finished sketch");
+            // console.log("Finished sketch");
         }
     }
     EvilVFilter {
@@ -149,7 +155,8 @@ Rectangle {
         y: 0
         width: parent.width - stillControls.buttonsPanelWidth
         height: parent.height
-        filters: [ sketchFilter ]
+        //filters: [ sketchFilter ]
+        filters:[ mode2Filter(stillControls.displayMode)]
 
         source: camera
         autoOrientation: true
@@ -162,6 +169,7 @@ Rectangle {
         visible: cameraUI.state == "PhotoCapture"
         onPreviewSelected: cameraUI.state = "PhotoPreview"
         onVideoModeSelected: cameraUI.state = "VideoCapture"
+        displayMode: 1
     }
 
     VideoCaptureControls {
@@ -172,4 +180,23 @@ Rectangle {
         onPreviewSelected: cameraUI.state = "VideoPreview"
         onPhotoModeSelected: cameraUI.state = "PhotoCapture"
     }
+    function mode2Filter(mode) {
+        console.log("Change filter mode to", mode);
+        switch (mode) {
+          case 0:
+            return unchangedFilter;
+          case 1:
+            return toonFilter;
+          case 2:
+            return sketchFilter;
+          case 3:
+            return evilFilter;
+          case 4:
+            return alienFilter;
+          default:
+            return unchangedFilter;
+        }
+    }
 }
+
+
