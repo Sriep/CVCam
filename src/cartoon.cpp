@@ -73,6 +73,11 @@ void Cartoon::toonify(QString path, int toonFormat)
     };*/
 }
 
+// Convert the given photo into a cartoon-like or painting-like image.
+// Set sketchMode to true if you want a line drawing instead of a painting.
+// Set alienMode to true if you want alien skin instead of human.
+// Set evilMode to true if you want an "evil" character instead of a "good" character.
+// Set debugType to 1 to show where skin color is taken from, and 2 to show the skin mask in a new window (for desktop).
 void Cartoon::cartoonifyImage(Mat srcColor, Mat dst, bool sketchMode, bool alienMode, bool evilMode, int debugType)
 {
     // Convert from BGR color to Grayscale
@@ -176,7 +181,7 @@ void Cartoon::changeFacialSkinColor(Mat smallImgBGR, Mat bigEdges, int debugType
         // YCrCb Skin detector and color changer using multiple flood fills into a mask.
         // Apply flood fill on many points around the face, to cover different shades & colors of the face.
         // Note that these values are dependent on the face outline, drawn in drawFaceStickFigure().
-        //Cartoon::drawFaceStickFigure(smallImgBGR);
+        Cartoon::drawFaceStickFigure(smallImgBGR);
         int const NUM_SKIN_POINTS = 6;
         Point skinPts[NUM_SKIN_POINTS];
         skinPts[0] = Point(sw/2,          sh/2 - sh/6);

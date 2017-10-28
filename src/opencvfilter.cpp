@@ -30,12 +30,12 @@ QVideoFilterRunnable* UnchangedVFilter::createFilterRunnable()
 QVideoFilterRunnable* ToonVFilter::createFilterRunnable()
 {
     qDebug() << "return ToonVFilter";
-    return new SketchVFRunnable(this);
+    return new ToonVFRunnable(this);
 }
 QVideoFilterRunnable* SketchVFilter::createFilterRunnable()
 {
     qDebug() << "return SketchVFilter";
-    return new ToonVFRunnable(this);
+    return new SketchVFRunnable(this);
 }
 QVideoFilterRunnable* EvilVFilter::createFilterRunnable()
 {

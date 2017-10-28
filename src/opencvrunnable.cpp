@@ -111,29 +111,29 @@ QVideoFrame OpenCVRunnable::run(QVideoFrame *input
     // then run e.g. cv::CascadeClassifier,
     // and finally store the list of rectangles into a
     // QObject exposing a 'rects' property.
-    qDebug() << "In OpenCVRunnable::run, type " << vFRType();
+    //qDebug() << "In OpenCVRunnable::run, type " << vFRType();
 
     if (!input->isValid())
         return *input;
     input->map(QAbstractVideoBuffer::ReadWrite);
-    QVideoFrame::PixelFormat format = input->pixelFormat();
+    //QVideoFrame::PixelFormat format = input->pixelFormat();
+
     //qDebug() << "handle type: " << input->handleType();
     //qDebug() << "pixel format: " << format;
     QImage::Format imageFormat = QVideoFrame::imageFormatFromPixelFormat(input->pixelFormat());
+    QAbstractVideoBuffer::HandleType handleType = input->handleType();
     //qDebug() << "image format: " <<  imageFormat;
+
     //QImage image(input->bits(), input->width(), input->height(), imageFormat);
-    QImage image = imageWrapper(*input);
-    //QImage image;
-    //if (QImage::Format_Invalid == imageFormat
-    //        && (QAbstractVideoBuffer::NoHandle == handleType
-    //            || QAbstractVideoBuffer::GLTextureHandle == handleType))
-    //{
-    //    image = imageWrapper(*input);
-    //}
-    //else
-    //{
-    //    image = QImage(input->bits(), input->width(), input->height(), imageFormat);
-    //}
+    //QImage image = imageWrapper(*input);
+    QImage image;
+    if (QImage::Format_Invalid == imageFormat
+            && (QAbstractVideoBuffer::NoHandle == handleType
+                || QAbstractVideoBuffer::GLTextureHandle == handleType))
+        image = imageWrapper(*input);
+    else
+        image = QImage(input->bits(), input->width(), input->height(), imageFormat);
+
     //qDebug() << "Width 1: " << image.width();
     cv::Mat inMat = QImageToCvMat(image, false);
     //inMat.setTo(cv::Scalar(255, 255, 0));
@@ -150,7 +150,7 @@ QVideoFrame OpenCVRunnable::run(QVideoFrame *input
     QVideoFrame outvf = QVideoFrame(outImage);
     //qDebug() << "Is mapped: " << outvf.isMapped();
     if (outvf.isMapped())  outvf.unmap();
-    emit filter->finished();
+    emit filter->finished(NULL);
     *input = outvf;
     if (input->isMapped()) input->unmap();
     return *input;
@@ -166,9 +166,9 @@ void SketchVFRunnable::modifyImage(Mat inMat, Mat outMat)
 }
 void EvilVFRunnable::modifyImage(Mat inMat, Mat outMat)
 {
-    Cartoon::cartoonifyImage(inMat, outMat, false, true, false, 0);
+    Cartoon::cartoonifyImage(inMat, outMat, false, false, true, 0);
 }
 void AlianVFRunnable::modifyImage(Mat inMat, Mat outMat)
 {
-    Cartoon::cartoonifyImage(inMat, outMat, false, false, true, 0);
+    Cartoon::cartoonifyImage(inMat, outMat, false, true, false, 0);
 }

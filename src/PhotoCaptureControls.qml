@@ -47,7 +47,6 @@ FocusScope {
     property bool previewAvailable : false
 
     property int buttonsPanelWidth: buttonPaneShadow.width
-    property int displayMode: 0
 
     signal previewSelected
     signal videoModeSelected
@@ -83,6 +82,7 @@ FocusScope {
                 onClicked: camera.imageCapture.capture()
             }
 
+            //http://www.text2image.com/pit_t2i/saver
             CameraPropertyButton {
                 id : wbModesButton
                 value: CameraImageProcessing.WhiteBalanceAuto
@@ -122,35 +122,35 @@ FocusScope {
                 value : 0
                 model: ListModel {
                     ListElement {
-                        icon: "images/camera_auto_mode.png"
+                        icon: "images/auto.png"
                         value: Cartoon.Unchanged
                         text: "Normal"
                     }
                     ListElement {
-                        icon: "images/camera_white_balance_sunny.png"
+                        icon: "images/sketch.png"
                         value: Cartoon.Sketch
                         text: "Sketch"
                     }
                     ListElement {
-                        icon: "images/camera_white_balance_cloudy.png"
+                        icon: "images/toon.png"
                         value: Cartoon.Toon
                         text: "Toon"
                     }
                     ListElement {
-                        icon: "images/camera_white_balance_incandescent.png"
+                        icon: "images/evil.png"
                         value: Cartoon.Evil
                         text: "Evil"
                     }
                     ListElement {
-                        icon: "images/camera_white_balance_flourescent.png"
+                        icon: "images/alien.png"
                         value: Cartoon.Alian
                         text: "Alien"
                     }
                 }
                 onValueChanged: {
-                    console.log("displaymodebutton value", displayModeButton.value);
-                    captureControls.displayMode = displayModeButton.value
-                    console.log("displaymode", captureControls.displayMode);
+                    cameraUI.displayMode =  displayModeButton.value
+                    console.log("new camera ui mode", cameraUI.displayMode)
+
                 }
             }
 

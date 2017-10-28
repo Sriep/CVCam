@@ -9,7 +9,7 @@ class OpenCVFilter : public QAbstractVideoFilter
 public:
     OpenCVFilter();
 signals:
-    void finished();
+    void finished(QObject* result);
 
 };
 

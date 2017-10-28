@@ -40,6 +40,7 @@
 
 import QtQuick 2.0
 import QtMultimedia 5.4
+import CoolCamera 1.0
 
 FocusScope {
     property Camera camera
@@ -68,6 +69,42 @@ FocusScope {
 
             id: buttonsColumn
             spacing: 8
+
+            CameraPropertyButton {
+                id : displayModeButton
+                value : 0
+                model: ListModel {
+                    ListElement {
+                        icon: "images/auto.png"
+                        value: Cartoon.Unchanged
+                        text: "Normal"
+                    }
+                    ListElement {
+                        icon: "images/sketchW.png"
+                        value: Cartoon.Sketch
+                        text: "Sketch"
+                    }
+                    ListElement {
+                        icon: "images/toon.png"
+                        value: Cartoon.Toon
+                        text: "Toon"
+                    }
+                    ListElement {
+                        icon: "images/evil.png"
+                        value: Cartoon.Evil
+                        text: "Evil"
+                    }
+                    ListElement {
+                        icon: "images/alien.png"
+                        value: Cartoon.Alian
+                        text: "Alien"
+                    }
+                }
+                onValueChanged: {
+                    cameraUI.displayMode =  displayModeButton.value
+                    console.log("new camera ui mode after", cameraUI.displayMode)
+                }
+            }
 
             FocusButton {
                 camera: captureControls.camera

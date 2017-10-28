@@ -25,6 +25,11 @@
         <file>images/camera_white_balance_sunny.png</file>
         <file>images/toolbutton.png</file>
         <file>images/toolbutton.sci</file>
-        <file>images/240px-Question_mark_white_icon.svg.png</file>
+        <file>images/auto.png</file>
+        <file>images/sketch.png</file>
+        <file>images/toon.png</file>
+        <file>images/sketchW.png</file>
+        <file>images/alien.png</file>
+        <file>images/evil.png</file>
     </qresource>
 </RCC>

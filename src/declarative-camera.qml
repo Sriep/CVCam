@@ -59,7 +59,8 @@ Rectangle {
             name: "PhotoCapture"
             StateChangeScript {
                 script: {
-                    camera.captureMode = Camera.CaptureStillImage
+                    //camera.captureMode = Camera.CaptureStillImage
+                    camera.captureMode = Camera.CaptureVideo
                     camera.start()
                 }
             }
@@ -91,13 +92,17 @@ Rectangle {
 
     Camera {
         id: camera
-        captureMode: Camera.CaptureStillImage
-
+        //captureMode: Camera.CaptureStillImage
+        captureMode: Camera.CaptureVideo
         imageCapture {
-            onImageCaptured: {
+            onImageCaptured: {                
+                //preview = ":/images/camera_flash_off.png"
                 photoPreview.source = preview
-                //var p = preview;
-                cartoon.toonify(preview, 1);
+                var p = preview;
+                console.log("capture requestId", requestId)
+                console.log("capture preview", preview)
+                console.log("capture last image", camera.capturedImagePath)
+                cartoon.toonify(preview, cameraUI.displayMode);
                 stillControls.previewAvailable = true
                 cameraUI.state = "PhotoPreview"
             }
@@ -128,25 +133,6 @@ Rectangle {
         source: visible ? camera.videoRecorder.actualLocation : ""
     }
 
-    UnchangedVFilter {
-        id: unchangedFilter
-    }
-    ToonVFilter {
-        id: toonFilter
-    }
-    SketchVFilter {
-        id: sketchFilter
-        onFinished: {
-            // console.log("Finished sketch");
-        }
-    }
-    EvilVFilter {
-        id: evilFilter
-    }
-    AlienVFilter {
-        id: alienFilter
-    }
-
     VideoOutput {
         id: viewfinder
         visible: cameraUI.state == "PhotoCapture" || cameraUI.state == "VideoCapture"
@@ -155,8 +141,7 @@ Rectangle {
         y: 0
         width: parent.width - stillControls.buttonsPanelWidth
         height: parent.height
-        //filters: [ sketchFilter ]
-        filters:[ mode2Filter(stillControls.displayMode)]
+        filters:[ mode2Filter(cameraUI.displayMode)]
 
         source: camera
         autoOrientation: true
@@ -169,7 +154,6 @@ Rectangle {
         visible: cameraUI.state == "PhotoCapture"
         onPreviewSelected: cameraUI.state = "PhotoPreview"
         onVideoModeSelected: cameraUI.state = "VideoCapture"
-        displayMode: 1
     }
 
     VideoCaptureControls {
@@ -180,15 +164,34 @@ Rectangle {
         onPreviewSelected: cameraUI.state = "VideoPreview"
         onPhotoModeSelected: cameraUI.state = "PhotoCapture"
     }
+
+    UnchangedVFilter {
+        id: unchangedFilter
+    }
+    ToonVFilter {
+        id: toonFilter
+    }
+    SketchVFilter {
+        id: sketchFilter
+        onFinished: {
+            // onFinished: console.log("results of the computation: " + result)
+        }
+    }
+    EvilVFilter {
+        id: evilFilter
+    }
+    AlienVFilter {
+        id: alienFilter
+    }
     function mode2Filter(mode) {
         console.log("Change filter mode to", mode);
         switch (mode) {
           case 0:
             return unchangedFilter;
           case 1:
-            return toonFilter;
-          case 2:
             return sketchFilter;
+          case 2:
+            return toonFilter;
           case 3:
             return evilFilter;
           case 4:
